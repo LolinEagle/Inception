@@ -1,29 +1,67 @@
-version: '3.1'
+version: "3"
 
 services:
-  wordpress:
-    image: wordpress
-    restart: always
+  nginx:
+    container_name: nginx
+    image: nginx
+    volumes:
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    depends_on:
+      - wordpress
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+    env_file: .env
     ports:
-      - 8080:80
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: exampleuser
-      WORDPRESS_DB_PASSWORD: examplepass
-      WORDPRESS_DB_NAME: exampledb
+      - "443:443"
+    restart: on-failure
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    networks:
+      - inception
+    build:
+      context: requirements/mariadb
+      dockerfile: Dockerfile
+      env_file: .env
     volumes:
-      - wordpress:/var/www/html
-  db:
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_DATABASE: exampledb
-      MYSQL_USER: exampleuser
-      MYSQL_PASSWORD: examplepass
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      - mariadb:/var/lib/mysql
+    restart: unless-stopped
+    expose:
+      - "3306"
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    env_file: .env
     volumes:
-      - db:/var/lib/mysql
+      - wordpress:/var/www/wordpress
+    networks:
+      - inception
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+    depends_on:
+      - mariadb
+    restart: on-failure
+    expose:
+      - "9000"
 
 volumes:
   wordpress:
-  db:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/Users/frrusso/data/wordpress'
+  mariadb:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '/Users/frrusso/data/mariadb'
+
+networks:
+  inception:
+    driver: bridge
