@@ -25,7 +25,7 @@ services:
     build:
       context: requirements/mariadb
       dockerfile: Dockerfile
-      env_file: .env
+    env_file: .env
     volumes:
       - mariadb:/var/lib/mysql
     restart: unless-stopped
@@ -49,18 +49,18 @@ services:
       - "9000"
 
 volumes:
-  wordpress:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/Users/frrusso/data/wordpress'
   mariadb:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/Users/frrusso/data/mariadb'
+      device: '${HOME}/data/mariadb'
+  wordpress:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: '${HOME}/data/wordpress'
 
 networks:
   inception:
