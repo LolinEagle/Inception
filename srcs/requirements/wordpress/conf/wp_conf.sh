@@ -1,5 +1,5 @@
 if [ ! -f /var/www/wordpress/wp-config.php ]; then
-	sleep 10
+	sleep 15
 	# wp core download --path='/var/www/wordpress'
 	wp config create --allow-root \
 		--dbname=$SQL_DATABASE \
@@ -24,7 +24,7 @@ if [ ! -f /var/www/wordpress/wp-config.php ]; then
 		--user_pass=$WP_USER_PASSWORD \
 		--path='/var/www/wordpress'
 else
-	echo "wp-config php DONE"
+	echo "wp-config.php is alredy done."
 fi
 
 if [ ! -d /run/php ]; then

@@ -14,5 +14,8 @@ EOF
 	sleep 5
 	mysqladmin -uroot -p$SQL_ROOT_PASSWORD shutdown
 	touch /var/lib/mysql/file_flag_mdb_done
+else
+	echo "file_flag_mdb_done is alredy done."
 fi
+
 exec mysqld

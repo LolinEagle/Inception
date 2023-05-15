@@ -16,6 +16,8 @@ COMPOSE	=	docker compose -f ./srcs/docker-compose.yml
 all:${NAME}
 
 clean:
+	rm -rf ${HOME}/data/mariadb
+	rm -rf ${HOME}/data/wordpress
 	${COMPOSE} down -v
 
 fclean:clean
@@ -26,7 +28,7 @@ re:fclean
 stop:
 	${COMPOSE} stop
 
-prune:
+prune:fclean
 	docker system prune -af
 
 ${NAME}:
